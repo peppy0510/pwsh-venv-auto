@@ -45,7 +45,7 @@ PrivateData = @{
         LicenseUri = ''
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://github.com/peppy0510/pwsh-venv-auto'
+        ProjectUri = 'https://github.com/peppy0510/pwsh-venv-auto.git'
 
         # ReleaseNotes of this module
         ReleaseNotes = ''
