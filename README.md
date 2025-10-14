@@ -8,7 +8,7 @@
 
 ```bash
 Install-Module InstallModuleFromGit -Scope CurrentUser
-InstallModuleFromGit https://github.com/peppy0510/pwsh-venv-auto.git -Scope CurrentUser
+Install-GitModule https://github.com/peppy0510/pwsh-venv-auto.git -Scope CurrentUser
 ```
 
 * Add following command to your PowerShell profile
