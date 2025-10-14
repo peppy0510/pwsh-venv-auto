@@ -1,4 +1,3 @@
-
 $global:PSActivatedVenvPath = $null
 
 function AutoActivate-Venv {
