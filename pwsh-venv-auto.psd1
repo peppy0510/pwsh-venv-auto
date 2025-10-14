@@ -22,8 +22,7 @@ Description = 'Automaticall activate and deactivate Python Virtual Environment w
 PowerShellVersion = '5.0'
 
 # Functions to export from this module
-FunctionsToExport = @(
-)
+FunctionsToExport = @()
 
 # Cmdlets to export from this module
 CmdletsToExport = @()
@@ -45,7 +44,7 @@ PrivateData = @{
         LicenseUri = ''
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://github.com/peppy0510/pwsh-venv-auto.git'
+        ProjectUri = 'https://github.com/peppy0510/pwsh-venv-auto'
 
         # ReleaseNotes of this module
         ReleaseNotes = ''
