@@ -4,7 +4,7 @@
 RootModule = 'pwsh-venv-auto.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.0'
+ModuleVersion = '1.0.1'
 
 # ID used to uniquely identify this module
 GUID = 'ae38bedf-c2b6-4d18-a9ed-888f0446f90a'

@@ -49,13 +49,14 @@ function AutoActivate-Venv {
     }
 }
 
-function global:Set-Location {
-    param (
-        [Parameter(Position=0, Mandatory=$true)]
-        [string] $Path
-    )
-    Microsoft.PowerShell.Management\Set-Location -Path $Path
+if ((Get-Location).Path -notlike "*\\wsl.localhost\*") {
+    function global:Set-Location {
+        param (
+            [Parameter(Position=0, Mandatory=$true)]
+            [string] $Path
+        )
+        Microsoft.PowerShell.Management\Set-Location -Path $Path
+        AutoActivate-Venv
+    }
     AutoActivate-Venv
 }
-
-AutoActivate-Venv
