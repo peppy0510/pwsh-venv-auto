@@ -1,10 +1,17 @@
 $global:PSActivatedVenvPath = $null
 
 function AutoActivate-Venv {
-    $startPath = (Get-Location).Path    
+    $startPath = (Get-Location).Path
+    if ($startPath -like "*\\wsl.localhost\*") { return }
     $venvNames = @("venv", "env", ".venv", ".env")
     $suffixName = "bin"
     if ($IsWindows) { $suffixName = "Scripts" }
+    if ($env:VIRTUAL_ENV -and -not $global:PSActivatedVenvPath) {
+        $separator = [System.IO.Path]::PathSeparator
+        $inherited = @("bin", "Scripts") | ForEach-Object { Join-Path -Path $env:VIRTUAL_ENV -ChildPath $_ }
+        $env:PATH = (($env:PATH -split $separator) | Where-Object { $inherited -notcontains $_ }) -join $separator
+        Remove-Item Env:VIRTUAL_ENV, Env:VIRTUAL_ENV_PROMPT, Env:_OLD_VIRTUAL_PATH -ErrorAction SilentlyContinue
+    }
     for ($i=0; $i -lt $venvNames.Length; $i++) {
         $venvNames[$i] = Join-Path -Path $venvNames[$i] -ChildPath $suffixName
     }
@@ -49,14 +56,10 @@ function AutoActivate-Venv {
     }
 }
 
-if ((Get-Location).Path -notlike "*\\wsl.localhost\*") {
-    function global:Set-Location {
-        param (
-            [Parameter(Position=0, Mandatory=$true)]
-            [string] $Path
-        )
-        Microsoft.PowerShell.Management\Set-Location -Path $Path
-        AutoActivate-Venv
-    }
+$previousLocationChangedAction = $ExecutionContext.SessionState.InvokeCommand.LocationChangedAction
+$ExecutionContext.SessionState.InvokeCommand.LocationChangedAction = {
+    param($source, $eventArgs)
+    if ($previousLocationChangedAction) { $previousLocationChangedAction.Invoke($source, $eventArgs) }
     AutoActivate-Venv
 }
+AutoActivate-Venv

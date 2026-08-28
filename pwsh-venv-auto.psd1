@@ -4,7 +4,7 @@
 RootModule = 'pwsh-venv-auto.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.1'
+ModuleVersion = '1.1.0'
 
 # ID used to uniquely identify this module
 GUID = 'ae38bedf-c2b6-4d18-a9ed-888f0446f90a'
@@ -19,7 +19,7 @@ Copyright = '(c) 2025 Taehong Kim'
 Description = 'Automaticall activate and deactivate Python Virtual Environment when you change directory.'
 
 # Minimum version of the Windows PowerShell engine required by this module
-PowerShellVersion = '5.0'
+PowerShellVersion = '6.2'
 
 # Functions to export from this module
 FunctionsToExport = @()
