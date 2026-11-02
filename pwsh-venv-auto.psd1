@@ -4,7 +4,7 @@
 RootModule = 'pwsh-venv-auto.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.1.0'
+ModuleVersion = '1.2.0'
 
 # ID used to uniquely identify this module
 GUID = 'ae38bedf-c2b6-4d18-a9ed-888f0446f90a'
@@ -16,7 +16,7 @@ Author = 'Taehong Kim'
 Copyright = '(c) 2025 Taehong Kim'
 
 # Description of the functionality provided by this module
-Description = 'Automaticall activate and deactivate Python Virtual Environment when you change directory.'
+Description = 'Automatically activate and deactivate Python Virtual Environment when you change directory.'
 
 # Minimum version of the Windows PowerShell engine required by this module
 PowerShellVersion = '6.2'
@@ -38,7 +38,7 @@ AliasesToExport = @()
 PrivateData = @{
     PSData = @{
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @()
+        Tags = @('python', 'venv', 'virtualenv')
 
         # A URL to the license for this module.
         LicenseUri = ''
@@ -47,7 +47,7 @@ PrivateData = @{
         ProjectUri = 'https://github.com/peppy0510/pwsh-venv-auto'
 
         # ReleaseNotes of this module
-        ReleaseNotes = ''
+        ReleaseNotes = 'Leaves venvs activated by hand to their own deactivate, activates again after a manual deactivate, skips non-file drives and \\wsl$ paths, and puts the previous LocationChangedAction back on Remove-Module.'
     }
 }
 }

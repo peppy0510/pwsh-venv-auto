@@ -1,7 +1,7 @@
 ## pwsh-venv-auto
 
 * PowerShell Module
-* Automaticall activate and deactivate Python Virtual Environment when you change directory
+* Automatically activate and deactivate Python Virtual Environment when you change directory
 * Installed Virtual Environment directory name must be one of `venv`, `env`, `.venv`, `.env`
 
 ### Installation

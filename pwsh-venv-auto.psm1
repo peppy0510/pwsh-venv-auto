@@ -1,16 +1,25 @@
 $global:PSActivatedVenvPath = $null
 
 function AutoActivate-Venv {
-    $startPath = (Get-Location).Path
-    if ($startPath -like "*\\wsl.localhost\*") { return }
+    $location = Get-Location
+    # the registry, the environment and other drives hold no venv
+    if ($location.Provider.Name -ne "FileSystem") { return }
+    $startPath = $location.ProviderPath
+    if ($startPath -like "*\\wsl.localhost\*" -or $startPath -like "*\\wsl$\*") { return }
     $venvNames = @("venv", "env", ".venv", ".env")
     $suffixName = "bin"
     if ($IsWindows) { $suffixName = "Scripts" }
     if ($env:VIRTUAL_ENV -and -not $global:PSActivatedVenvPath) {
-        $separator = [System.IO.Path]::PathSeparator
-        $inherited = @("bin", "Scripts") | ForEach-Object { Join-Path -Path $env:VIRTUAL_ENV -ChildPath $_ }
-        $env:PATH = (($env:PATH -split $separator) | Where-Object { $inherited -notcontains $_ }) -join $separator
-        Remove-Item Env:VIRTUAL_ENV, Env:VIRTUAL_ENV_PROMPT, Env:_OLD_VIRTUAL_PATH -ErrorAction SilentlyContinue
+        if (Get-Command deactivate -CommandType Function -ErrorAction SilentlyContinue) {
+            # activated by hand in this session: its deactivate puts the prompt back too
+            deactivate
+        } else {
+            # inherited from a parent shell, which kept the deactivate
+            $separator = [System.IO.Path]::PathSeparator
+            $inherited = @("bin", "Scripts") | ForEach-Object { Join-Path -Path $env:VIRTUAL_ENV -ChildPath $_ }
+            $env:PATH = (($env:PATH -split $separator) | Where-Object { $inherited -notcontains $_ }) -join $separator
+            Remove-Item Env:VIRTUAL_ENV, Env:VIRTUAL_ENV_PROMPT, Env:_OLD_VIRTUAL_PATH, Env:_OLD_VIRTUAL_PYTHONHOME -ErrorAction SilentlyContinue
+        }
     }
     for ($i=0; $i -lt $venvNames.Length; $i++) {
         $venvNames[$i] = Join-Path -Path $venvNames[$i] -ChildPath $suffixName
@@ -37,8 +46,8 @@ function AutoActivate-Venv {
         if (-not $path) { $path = $rootPath }
     }
     if ($venvFound) {
-        if ($global:PSActivatedVenvPath -ne $venvFound) {
-            if ($global:PSActivatedVenvPath) {
+        if ($global:PSActivatedVenvPath -ne $venvFound -or -not $env:VIRTUAL_ENV) {
+            if ($global:PSActivatedVenvPath -and $env:VIRTUAL_ENV) {
                 try {
                     deactivate
                 } catch {}
@@ -48,9 +57,11 @@ function AutoActivate-Venv {
         }
     } else {
         if ($global:PSActivatedVenvPath) {
-            try {
-                deactivate
-            } catch {}
+            if ($env:VIRTUAL_ENV) {
+                try {
+                    deactivate
+                } catch {}
+            }
             $global:PSActivatedVenvPath = $null
         }
     }
@@ -62,4 +73,8 @@ $ExecutionContext.SessionState.InvokeCommand.LocationChangedAction = {
     if ($previousLocationChangedAction) { $previousLocationChangedAction.Invoke($source, $eventArgs) }
     AutoActivate-Venv
 }
+# Remove-Module, and Import-Module -Force before it imports again, put the earlier action back
+$ExecutionContext.SessionState.Module.OnRemove = {
+    $ExecutionContext.SessionState.InvokeCommand.LocationChangedAction = $previousLocationChangedAction
+}.GetNewClosure()
 AutoActivate-Venv
